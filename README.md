@@ -1,7 +1,3 @@
 #  This repository including following files.
-1. Analysis code (Preprocess data, multi-level model, meta-analysis, visualization)
-2. markdown and html file about the project
-3. The html fime please view on this URL: 
-  Github source page, please go to this [webpage](https://cdsbasel.github.io/ageriskmeta/)
-  
-  [analysis process webpage](https://cdsbasel.github.io/ageriskmeta/age_risktaing_metaanalysis.html)
+1. If you are interested in the specific analysis process, here is a [webpage](https://cdsbasel.github.io/ageriskmeta/age_risktaing_metaanalysis.html) for you.
+2. if you are interested in the detailed code (Preprocess data, multi-level model, meta-analysis, visualization), please find it in the [Github source page](https://cdsbasel.github.io/ageriskmeta/)
