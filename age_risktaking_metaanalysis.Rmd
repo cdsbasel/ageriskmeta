@@ -1927,13 +1927,13 @@ More information at: https://www.diw.de/en/diw_01.c.600489.en/about_us.html#c_62
 
 **Country/Countries:** Germany
 
-**Waves:** 2004-2018
+**Waves:** 2004-2019
 
 **Data collection period:** 1984-present
 
-**Dataset(s) version number/name:** SOEP-Core v35 
+**Dataset(s) version number/name:** SOEP-Core v36 
 
-**Data access:** https://www.diw.de/sixcms/detail.php?id=diw_01.c.742256.en
+**Data access:** https://www.diw.de/sixcms/detail.php?id=diw_01.c.814095.en
 
 **Age distribution:** Left plot: density plot for age distribution; Right plot: histogram of age distributions (all observations)
 <br>
