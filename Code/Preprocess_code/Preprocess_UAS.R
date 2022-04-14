@@ -36,6 +36,7 @@ UAS_preprocess <- Reduce(function(x, y) merge(x, y, all=TRUE), list(UAS20, UAS95
   select(uasid, gender, age, b132_, SYEAR) %>%
   rename(ID=uasid, Gender=gender,  General = b132_) %>%
   mutate(Gender = replace(Gender, Gender==0, 2)) %>%  #change gender value to: 2=Female, 1=Male
+  mutate(Gender = as.numeric(Gender)) %>%
   filter(!is.na(age)) %>%
   filter(!is.na(Gender)) %>%
   filter(age >= 18 & age <= 90) 
