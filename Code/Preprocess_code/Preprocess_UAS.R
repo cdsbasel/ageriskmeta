@@ -20,12 +20,12 @@ UAS95 <- read_dta('uas95.dta', encoding = "latin1") %>%
   select(uashhid, uasid, gender, dateofbirth_year, age, agerange, b132_) %>%
   mutate(SYEAR = 2017)
 
-# UAS 185---HRS WAVE 2
+# UAS 185---HRS WAVE 3
 UAS185 <- read_dta('uas185.dta', encoding = "latin1") %>%
   select(uashhid, uasid, gender, dateofbirth_year, age, agerange, b132_) %>%
   mutate(SYEAR = 2019)
 
-# UAS 396---HRS WAVE 2
+# UAS 396---HRS WAVE 4
 UAS396 <- read_dta('uas396.dta', encoding = "latin1") %>%
   select(uashhid, uasid, gender, dateofbirth_year, age, agerange, b132_) %>%
   mutate(SYEAR = 2021)
