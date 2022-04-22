@@ -53,7 +53,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## 1. Overview of the project 
 
-&nbsp; &nbsp;&nbsp; &nbsp;This website contains results from all analyses conducted for the manuscript entitled “Adult age differences in risk-taking propensity are universal but show considerable heterogeneity across domains and populations”. This document is organized by different domains of risk-taking propensity, including general, financial, driving, recreational, occupational, health and social domains. For each risk-taking propensity, we created 7 models, including intercept-only model (M1), fixed-effect model (M2), linear model (M3), linear with gender model (M4), linear with gender interaction model (M5), quadratic model (M6) and quadratic with gender model (M7), and provided a table summarizing individual study model results, the meta-analytic results and  trajectory plots. We also tested individual predictors that are not included in the simple trajectory model in meta-regression: continent, mean age and scale range. The results from these models are available below. The code used to compile this file is available in the Github repository (https://github.com/cdsbasel/ageriskmeta).
+&nbsp; &nbsp;&nbsp; &nbsp;This page contains results from all analyses conducted for the manuscript entitled “Adult age differences in risk-taking propensity are universal but show considerable heterogeneity across domains and populations”. The page is organized by different domains of risk-taking propensity, including general, financial, driving, recreational, occupational, health and social domains. For each risk-taking propensity, we created 7 models, including intercept-only model (M1), fixed-effect model (M2), linear model (M3), linear with gender model (M4), linear with gender interaction model (M5), quadratic model (M6) and quadratic with gender model (M7), and provided a table summarizing individual study model results, the meta-analytic results and trajectory plots. We also conducted meta-regressions using additional predictors that are not included in the simpler models (i.e., continent, mean age and scale range). The code used to compile this file is available in the Github repository (https://github.com/cdsbasel/ageriskmeta).
 
 <div style="margin-bottom:40px;">
 </div>
@@ -2331,7 +2331,7 @@ ggplot(USoc_process_z_General) +
 <div style="margin-bottom:40px;">
 </div>
 
-## 3. Multilevel model process {.tabset}
+## 3. Multilevel models: Overview {.tabset}
 
 This section offers a detailed overview of the 7 different models included in the multilevel analysis in the paper *Adult age differences in risk-taking propensity are universal but show considerable heterogeneity across domains and populations*.
 
@@ -2483,7 +2483,7 @@ This section offers a detailed overview of the 7 different models included in th
 </div>
 
 
-## 4. Multilevel model results
+## 4. Multilevel model: Results
 
 ### 4.1. General risk-taking{.tabset}
 
@@ -6441,7 +6441,7 @@ summary(meta_h.quad.gender_gender)
 </div>
  
 
-## 6. Models comparison
+## 6. Model comparison
 ### 6.1. Samples including 3 or more waves
 ```{r, echo = F, warning = FALSE, message = FALSE}
 Total.Number <- c(9, 20, 3, 3, 3, 3, 1)
