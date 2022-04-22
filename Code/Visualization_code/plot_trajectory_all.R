@@ -117,7 +117,6 @@ Recreational = figure_list$plot_r.lg.gender
 Occupational = figure_list$plot_o.lg.gender
 Health = figure_list$plot_h.lg.gender
 
-
 (General + theme(plot.margin = unit(c(0,20,0,0), "pt"))) /
   (Financial + theme(plot.margin = unit(c(0,20,0,0), "pt")))/
   (Driving + theme(plot.margin = unit(c(10,20,10,0), "pt"))) / 
