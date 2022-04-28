@@ -10,11 +10,11 @@ author:
     url: https://psychologie.unibas.ch/de/personen/bagaini-alexandra/
     affiliation: Center for Cognitive and Decision Sciences, University of Basel
     affiliation_url: https://psychologie.unibas.ch/de/fakultaet/abteilungen/cognitive-and-decision-sciences-305/
-  - name: Madlaina Kapoor
+  - name: Gayoung Son
     url: https://psychologie.unibas.ch/de/personen/kapoor-madlaina/
     affiliation: Center for Cognitive and Decision Sciences, University of Basel
     affiliation_url: https://psychologie.unibas.ch/de/fakultaet/abteilungen/cognitive-and-decision-sciences-305/
-  - name:  Gayoung Son
+  - name: Madlaina Kapoor
     url: https://psychologie.unibas.ch/de/personen/gayoung-son/
     affiliation: Center for Cognitive and Decision Sciences, University of Basel
     affiliation_url: https://psychologie.unibas.ch/de/fakultaet/abteilungen/cognitive-and-decision-sciences-305/
