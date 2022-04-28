@@ -6795,7 +6795,7 @@ sketch = htmltools::withTags(table(
     tr(
       th(rowspan = 2, ''),
       th(rowspan = 2, 'Total number'),
-      th(colspan = 3, 'Best fit sample number'),
+      th(colspan = 3, 'Number of samples with best-fitting'),
     ),
     tr(
       lapply(c("Linear", "Linear with gender", "Linear with gender interaction"), th)
@@ -6824,7 +6824,7 @@ sketch = htmltools::withTags(table(
     tr(
       th(rowspan = 2, ''),
       th(rowspan = 2, 'Total number'),
-      th(colspan = 5, 'Best fit sample number'),
+      th(colspan = 5, 'Number of samples with best-fitting'),
     ),
     tr(
       lapply(c("Linear", "Linear with gender", "Linear with gender interaction", "Quadratic", "Quadratic with gender"), th)
