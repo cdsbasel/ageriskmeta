@@ -45,6 +45,10 @@ scale.financial = c(7, 11, 11,11, 4, 11, 11, 4, 7,
                   rep(4, 14), 
                   11, 11, 11)
 
+Survey.year = c(1993, 2004, 2005, 2016, 2001, 2014, 2010, 2010, 2001,
+                2007, 2007, 2007, 2007, 2011, 2007, 2007, 2007, 2007, 2007, 2011,2007, 2007, 2007,
+                2004, 2015, 2008)
+
 
 cofficients1 <- list(list("icc", "icc.se", "icc_N.obs"),  # int
                     list("age_Estimate", "age_Std.Error1", "age_N.obs"),  # fixed
@@ -109,6 +113,7 @@ extract_meta_parameter <- function(ab_domains, models, coefficients1, cofficient
         meta_data_list[[meta_model_name]]$continent <- as.factor(continent)
         meta_data_list[[meta_model_name]]$scale.general <- scale.general
         meta_data_list[[meta_model_name]]$scale.financial <- scale.financial
+        meta_data_list[[meta_model_name]]$Survey.year <- Survey.year
         meta_data_list[[meta_model_name]] <- tibble::rownames_to_column(meta_data_list[[meta_model_name]], "study")
     }
   }
@@ -162,7 +167,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
           meta_results_list_all[[meta_results_name]][[cofficient]] <- rma (yi = icc,
                                                                            sei = icc.se,
                                                                            slab = study,
-                                                                           mods = ~ continent + mean.age + scale,
+                                                                           mods = ~ continent + mean.age + scale + Survey.year,
                                                                            ni = icc_N.obs,
                                                                            data = metadata)
           }else{
@@ -173,7 +178,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
             meta_results_list_all[[meta_results_name]][[cofficient]] <- rma (yi = icc,
                                                                              sei = icc.se,
                                                                              slab = study,
-                                                                             mods = ~ continent + mean.age + scale,
+                                                                             mods = ~ continent + mean.age + scale + Survey.year,
                                                                              ni = icc_N.obs,
                                                                              data = metadata)
             }
@@ -194,7 +199,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
           meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                           sei = age_Std.Error1,
                                                                           slab = study,
-                                                                          mods = ~ continent + mean.age + scale,
+                                                                          mods = ~ continent + mean.age + scale + Survey.year,
                                                                           ni = age_N.obs,
                                                                           data = metadata)
           }else{
@@ -205,7 +210,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
             meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                             sei = age_Std.Error1,
                                                                             slab = study,
-                                                                            mods = ~ continent + mean.age + scale,
+                                                                            mods = ~ continent + mean.age + scale + Survey.year,
                                                                             ni = age_N.obs,
                                                                             data = metadata)
             } 
@@ -227,7 +232,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                 sei = age_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_N.obs,
                                                                                 data = metadata)
                 }else{
@@ -238,7 +243,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                   meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                   sei = age_Std.Error1,
                                                                                   slab = study,
-                                                                                  mods = ~ continent + mean.age + scale,
+                                                                                  mods = ~ continent + mean.age + scale + Survey.year,
                                                                                   ni = age_N.obs,
                                                                                   data = metadata)
                 }
@@ -257,7 +262,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                                 sei = gender_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = gender_N.obs,
                                                                                 data = metadata)
                 }else{
@@ -268,7 +273,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                   meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                                   sei = gender_Std.Error1,
                                                                                   slab = study,
-                                                                                  mods = ~ continent + mean.age + scale,
+                                                                                  mods = ~ continent + mean.age + scale + Survey.year,
                                                                                   ni = gender_N.obs,
                                                                                   data = metadata)
                 }
@@ -294,7 +299,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                 sei = age_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_N.obs,
                                                                                 data = metadata)
                 }else{
@@ -305,7 +310,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                   meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                   sei = age_Std.Error1,
                                                                                   slab = study,
-                                                                                  mods = ~ continent + mean.age + scale,
+                                                                                  mods = ~ continent + mean.age + scale + Survey.year,
                                                                                   ni = age_N.obs,
                                                                                   data = metadata)
               }
@@ -324,7 +329,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                               sei = gender_Std.Error1,
                                                                               slab = study,
-                                                                              mods = ~ continent + mean.age + scale,
+                                                                              mods = ~ continent + mean.age + scale + Survey.year,
                                                                               ni = gender_N.obs,
                                                                               data = metadata)
                 }else{
@@ -335,7 +340,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                   meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                               sei = gender_Std.Error1,
                                                                               slab = study,
-                                                                              mods = ~ continent + mean.age + scale,
+                                                                              mods = ~ continent + mean.age + scale + Survey.year,
                                                                               ni = gender_N.obs,
                                                                               data = metadata)
                 }
@@ -354,7 +359,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_gender_Estimate,
                                                                                 sei = age_gender_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_gender_N.obs,
                                                                                 data = metadata)
                 }else{
@@ -365,7 +370,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                   meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_gender_Estimate,
                                                                                   sei = age_gender_Std.Error1,
                                                                                   slab = study,
-                                                                                  mods = ~ continent + mean.age + scale,
+                                                                                  mods = ~ continent + mean.age + scale + Survey.year,
                                                                                   ni = age_gender_N.obs,
                                                                                   data = metadata)
                 }
@@ -391,7 +396,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi= age_Estimate,
                                                                                sei = age_Std.Error1,
                                                                                slab = study,
-                                                                               mods = ~ continent + mean.age + scale,
+                                                                               mods = ~ continent + mean.age + scale + Survey.year,
                                                                                ni = age_N.obs,
                                                                                data = metadata)
               }else{
@@ -402,7 +407,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                 sei = age_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_N.obs,
                                                                                 data = metadata)
               }
@@ -421,7 +426,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age2_Estimate,
                                                                                 sei = age2_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age2_N.obs,
                                                                                 data = metadata)
               }else{
@@ -432,7 +437,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age2_Estimate,
                                                                                 sei = age2_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age2_N.obs,
                                                                                 data = metadata)
               }
@@ -458,7 +463,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi= age_Estimate,
                                                                                 sei = age_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_N.obs,
                                                                                 data = metadata)
               }else{
@@ -469,7 +474,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age_Estimate,
                                                                                 sei = age_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age_N.obs,
                                                                                 data = metadata)
               }
@@ -488,7 +493,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age2_Estimate,
                                                                                  sei = age2_Std.Error1,
                                                                                  slab = study,
-                                                                                 mods = ~ continent + mean.age + scale,
+                                                                                 mods = ~ continent + mean.age + scale + Survey.year,
                                                                                  ni = age2_N.obs,
                                                                                  data = metadata)
               }else{
@@ -499,7 +504,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = age2_Estimate,
                                                                                 sei = age2_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = age2_N.obs,
                                                                                 data = metadata)
               }
@@ -518,7 +523,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                                 sei = gender_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = gender_N.obs,
                                                                                 data = metadata)
               }else{
@@ -529,7 +534,7 @@ meta_analysis <- function(ab_domains, models,cofficient_name, meta_data_list, me
                 meta_results_list_all[[meta_results_name]][[cofficient]] <- rma(yi = gender_Estimate,
                                                                                 sei = gender_Std.Error1,
                                                                                 slab = study,
-                                                                                mods = ~ continent + mean.age + scale,
+                                                                                mods = ~ continent + mean.age + scale + Survey.year,
                                                                                 ni = gender_N.obs,
                                                                                 data = metadata)
               }
