@@ -8313,7 +8313,7 @@ datatable(results_s.lg.gender.group, options = list(columnDefs = list(list(class
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity"}
 b=7
 c=1
 y_name <- paste0(domains[b],"_z_mean")
@@ -8403,7 +8403,7 @@ datatable(results_s.lg.gender.group.inter, options = list(columnDefs = list(list
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity."}
 b=7
 c=2
 y_name <- paste0(domains[b],"_z_mean")
