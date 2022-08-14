@@ -6913,6 +6913,1536 @@ plot_variance(lmer_Gender) +
   ylim(0, 100)
 ```
 
+<div style="margin-bottom:40px;">
+</div>
+
+
+## 9. Cohort effect
+
+### 9.1. General risk-taking {.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+p_judge <- function(x){
+  for (i in 1:length(x)) {
+    value = as.numeric(x[[i]])
+    if(value < 0.001) {
+      x[[i]] = "p < 0.001"
+      } else if( value < 0.01) {
+        x[[i]] = "P < 0.01"
+        } else if (value < 0.05) {
+          x[[i]] = "p < 0.05"
+          } else {
+            x[[i]] <- purrr::modify_if(value, ~is.numeric(.), ~round(., 3))
+          }
+  }
+  return(x)
+}
+
+
+setwd(".../data")
+results_table_list_cohort <- readRDS(file = "results_data/results_table_list_cohort.Rds")
+
+
+results_g.lg.gender.group <- results_table_list_cohort$results_g.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_g.lg.gender.group <- results_g.lg.gender.group[!(row.names(results_g.lg.gender.group) %in% remove),]
+rownames(results_g.lg.gender.group)[rownames(results_g.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_g.lg.gender.group)[rownames(results_g.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_g.lg.gender.group)[rownames(results_g.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_g.lg.gender.group)[rownames(results_g.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_g.lg.gender.group <- results_g.lg.gender.group[, colSums(is.na(results_g.lg.gender.group)) != nrow(results_g.lg.gender.group)]
+results_g.lg.gender.group <- results_g.lg.gender.group[complete.cases(results_g.lg.gender.group), ]
+
+results_g.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_g.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_g.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_g.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_g.lg.gender.group[13,] <- p_judge(results_g.lg.gender.group[13,])
+results_g.lg.gender.group[14,] <- p_judge(results_g.lg.gender.group[14,])
+results_g.lg.gender.group[15,] <- p_judge(results_g.lg.gender.group[15,])
+results_g.lg.gender.group[16,] <- p_judge(results_g.lg.gender.group[16,])
+
+results_g.lg.gender.group <- results_g.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_g.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_g.lg.gender.group))), pageLength = nrow(results_g.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+setwd(".../data/results_data")
+meta_results_list_cohort <- readRDS(file = "meta_results_list_cohort.Rds")
+
+meta_g.lg.gender.group <- meta_results_list_cohort$meta_g.lg.gender.group
+meta_g.lg.gender.group_age <- meta_g.lg.gender.group$age
+summary(meta_g.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group <- meta_results_list_cohort$meta_g.lg.gender.group
+meta_g.lg.gender.group_gender <- meta_g.lg.gender.group$gender
+summary(meta_g.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group <- meta_results_list_cohort$meta_g.lg.gender.group
+meta_g.lg.gender.group_age.group <- meta_g.lg.gender.group$age.group
+summary(meta_g.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+setwd(".../data/results_data")
+plot_model_data_list_cohort <- readRDS(file = "plot_model_data_list_cohort.Rds") 
+
+### prepare some loop variable ###
+panels <- c("DHS","GCOE_Japan","GCOE_USA","GLES","HILDA","HRS","LIKS","PHF","SAVE","SHARE_Austria","SHARE_Belgium","SHARE_Czech_Republic","SHARE_Denmark", "SHARE_Estonia", "SHARE_France", "SHARE_Germany","SHARE_Israel", "SHARE_Italy","SHARE_Netherlands","SHARE_Slovenia","SHARE_Spain","SHARE_Sweden","SHARE_Switzerland","SOEP","UAS","USoc")   # do not include Addhealth / NLSY79_Child / NLSY79_YA panel
+domains <- c("General", "Financial","Driving", "Recreational", "Occupational", "Health", "Social")
+ab_domains <- c("g", "f", "d", "r", "o", "h", "s")
+models = c("lg.gender.group", "lg.gender.group.inter")
+
+###function: create a empty figure_list for saving all plot
+index=0
+plot_name_list <- list()  
+figure_list <- vector("list", length = length(ab_domains)*length(models))
+for (b in 1:length(ab_domains)){
+  for (c in 1:length(models)){
+  index=index+1
+  plot_name_list[[index]] <- paste0("plot_",ab_domains[b],".", models[c])
+  }
+}
+names(figure_list) <- plot_name_list
+
+
+index <- c("DHS","GCOE_Japan","GCOE_USA","GLES","HILDA","HRS","LIKS","PHF","SAVE","SHARE_Austria","SHARE_Belgium","SHARE_Czech_Republic","SHARE_Denmark", "SHARE_Estonia", "SHARE_France", "SHARE_Germany","SHARE_Israel", "SHARE_Italy","SHARE_Netherlands","SHARE_Slovenia","SHARE_Spain","SHARE_Sweden","SHARE_Switzerland","SOEP","UAS","USoc")  
+values <- c("DHS","GCOE_Japan","GCOE_USA","GLES","HILDA","HRS","LIKS","PHF","SAVE","SHARE_Austria","SHARE_Belgium","SHARE_Czech_Republic","SHARE_Denmark", "SHARE_Estonia", "SHARE_France", "SHARE_Germany","SHARE_Israel", "SHARE_Italy","SHARE_Netherlands","SHARE_Slovenia","SHARE_Spain","SHARE_Sweden","SHARE_Switzerland","SOEP","UAS","USoc")  
+lines <- c(rep("a", 9), rep("c", 14), rep("a", 3))
+
+colordata <- data.frame(matrix(data=NA, nrow=length(panels), ncol = 1)) 
+colordata <- as.data.frame(matrix(panels))
+colnames(colordata) <-"Sample"
+colordata$Panel <- values[match(colordata$Sample, index)]
+colordata$Lines <- lines[match(colordata$Sample, index)]
+colordata$Sample<- as.factor(colordata$Sample) 
+colordata$Panel<- as.factor(colordata$Panel) 
+colordata$Lines <- as.factor(colordata$Lines) 
+
+scales_x <- list(
+  "Under 60 years old" = scale_x_continuous(limits = c(15, 60),breaks =seq(20, 60, 10)),
+  "Above 60 years old" = scale_x_continuous(limits = c(60, 105),breaks =seq(60, 100, 10)))
+
+#### plot: plot all panels in one picture (same y scale)
+
+###lg.gender.group model
+c=1
+for (b in 1:length(ab_domains)) {
+  y_name <- paste0(domains[b],"_z_mean")
+  y_number <- paste0(domains[b],"_z_n")
+  y_domain <- domains[b]
+  
+  plot_name <- paste0("plot_",ab_domains[b],".", models[c])
+  
+  #model data
+  model_data <- plot_model_data_list_cohort[[plot_name]] %>%
+    filter(!(age.group == 0 & age > 60)) %>%
+    filter(!(age.group == 1 & age <= 60)) 
+    
+  names(model_data)[names(model_data) == "Panel"] <- "Sample"
+  model_data$Panel <- values[match(model_data$Sample, index)]
+  model_data$Lines <- lines[match(model_data$Sample, index)]
+  
+  model_data[,"gender"] <- ifelse(model_data$gender == 0, "Male", "Female")
+  model_data$gender = factor(model_data$gender, levels = c("Male", "Female"))
+  
+  model_data[,"age.group"] <- ifelse(model_data$age.group == 0, "Under 60 years old", "Above 60 years old")
+  model_data$age.group = factor(model_data$age.group, levels = c("Under 60 years old", "Above 60 years old"))
+  
+  
+  figure_list[[plot_name]] <- ggplot() + 
+    stat_smooth(data = model_data, aes(x = age, y = fit, colour=Sample), se=FALSE, method = "lm", formula = y ~ x, size = 0.5) +
+    stat_smooth(data = model_data, aes(x = age, y = fit), color = "black", se=TRUE, method = "lm", formula = y ~ x, size = 1.1) +
+    labs(x= "Age", y= paste(y_domain,"risk-taking",sep = " ")) +
+    #scale_x_continuous(scales_x)+
+    coord_cartesian(ylim = c(-1, 1)) +
+    theme_bw() +
+    theme(panel.border = element_rect(colour = "black", fill=NA))+
+    facet_grid_sc(rows = vars(gender), cols = vars(age.group), scales = list(x = scales_x)) +
+    guides(col = guide_legend(ncol = 1))
+}
+
+General <- figure_list$plot_g.lg.gender.group
+
+General
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_g.lg.gender.group.inter <- results_table_list_cohort$results_g.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_g.lg.gender.group.inter <- results_g.lg.gender.group.inter[!(row.names(results_g.lg.gender.group.inter) %in% remove),]
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_g.lg.gender.group.inter)[rownames(results_g.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_g.lg.gender.group.inter <- results_g.lg.gender.group.inter[, colSums(is.na(results_g.lg.gender.group.inter)) != nrow(results_g.lg.gender.group.inter)]
+results_g.lg.gender.group.inter <- results_g.lg.gender.group.inter[complete.cases(results_g.lg.gender.group.inter), ]
+
+results_g.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_g.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_g.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_g.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_g.lg.gender.group.inter[25,] <- p_judge(results_g.lg.gender.group.inter[25,])
+results_g.lg.gender.group.inter[26,] <- p_judge(results_g.lg.gender.group.inter[26,])
+results_g.lg.gender.group.inter[27,] <- p_judge(results_g.lg.gender.group.inter[27,])
+results_g.lg.gender.group.inter[28,] <- p_judge(results_g.lg.gender.group.inter[28,])
+results_g.lg.gender.group.inter[29,] <- p_judge(results_g.lg.gender.group.inter[29,])
+results_g.lg.gender.group.inter[30,] <- p_judge(results_g.lg.gender.group.inter[30,])
+results_g.lg.gender.group.inter[31,] <- p_judge(results_g.lg.gender.group.inter[31,])
+results_g.lg.gender.group.inter[32,] <- p_judge(results_g.lg.gender.group.inter[32,])
+
+results_g.lg.gender.group.inter <- results_g.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_g.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_g.lg.gender.group.inter))), pageLength = nrow(results_g.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_age <- meta_g.lg.gender.group.inter$age
+summary(meta_g.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_gender <- meta_g.lg.gender.group.inter$gender
+summary(meta_g.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_age.group <- meta_g.lg.gender.group.inter$age.group
+summary(meta_g.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_age_gender <- meta_g.lg.gender.group.inter$age_gender
+summary(meta_g.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_age_age.group <- meta_g.lg.gender.group.inter$age_age.group
+summary(meta_g.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_gender_age.group <- meta_g.lg.gender.group.inter$gender_age.group
+summary(meta_g.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_g.lg.gender.group.inter <- meta_results_list_cohort$meta_g.lg.gender.group.inter
+meta_g.lg.gender.group.inter_age_gender_age.group <- meta_g.lg.gender.group.inter$age_gender_age.group
+summary(meta_g.lg.gender.group.inter_age_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+###lg.gender.group.inter model
+c=2
+for (b in 1:length(ab_domains)) {
+  y_name <- paste0(domains[b],"_z_mean")
+  y_number <- paste0(domains[b],"_z_n")
+  y_domain <- domains[b]
+  
+  plot_name <- paste0("plot_",ab_domains[b],".", models[c])
+  
+  #model data
+  model_data <- plot_model_data_list_cohort[[plot_name]] %>%
+    filter(!(age.group == 0 & age > 60)) %>%
+    filter(!(age.group == 1 & age <= 60)) 
+    
+  names(model_data)[names(model_data) == "Panel"] <- "Sample"
+  model_data$Panel <- values[match(model_data$Sample, index)]
+  model_data$Lines <- lines[match(model_data$Sample, index)]
+  
+  model_data[,"gender"] <- ifelse(model_data$gender == 0, "Male", "Female")
+  model_data$gender = factor(model_data$gender, levels = c("Male", "Female"))
+  
+  model_data[,"age.group"] <- ifelse(model_data$age.group == 0, "Under 60 years old", "Above 60 years old")
+  model_data$age.group = factor(model_data$age.group, levels = c("Under 60 years old", "Above 60 years old"))
+  
+  
+  figure_list[[plot_name]] <- ggplot() + 
+    stat_smooth(data = model_data, aes(x = age, y = fit, colour=Sample), se=FALSE, method = "lm", formula = y ~ x, size = 0.5) +
+    stat_smooth(data = model_data, aes(x = age, y = fit), color = "black", se=TRUE, method = "lm", formula = y ~ x, size = 1.1) +
+    labs(x= "Age", y= paste(y_domain,"risk-taking",sep = " ")) +
+    #scale_x_continuous(scales_x)+
+    coord_cartesian(ylim = c(-1, 1)) +
+    theme_bw() +
+    theme(panel.border = element_rect(colour = "black", fill=NA))+
+    facet_grid_sc(rows = vars(gender), cols = vars(age.group), scales = list(x = scales_x)) +
+    guides(col = guide_legend(ncol = 1))
+}
+
+General <- figure_list$plot_g.lg.gender.group.inter
+
+General
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+### 9.2. Financial risk-taking {.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_f.lg.gender.group <- results_table_list_cohort$results_f.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_f.lg.gender.group <- results_f.lg.gender.group[!(row.names(results_f.lg.gender.group) %in% remove),]
+rownames(results_f.lg.gender.group)[rownames(results_f.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_f.lg.gender.group)[rownames(results_f.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_f.lg.gender.group)[rownames(results_f.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_f.lg.gender.group)[rownames(results_f.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_f.lg.gender.group <- results_f.lg.gender.group[, colSums(is.na(results_f.lg.gender.group)) != nrow(results_f.lg.gender.group)]
+results_f.lg.gender.group <- results_f.lg.gender.group[complete.cases(results_f.lg.gender.group), ]
+
+results_f.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_f.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_f.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_f.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_f.lg.gender.group[13,] <- p_judge(results_f.lg.gender.group[13,])
+results_f.lg.gender.group[14,] <- p_judge(results_f.lg.gender.group[14,])
+results_f.lg.gender.group[15,] <- p_judge(results_f.lg.gender.group[15,])
+results_f.lg.gender.group[16,] <- p_judge(results_f.lg.gender.group[16,])
+
+results_f.lg.gender.group <- results_f.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_f.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_f.lg.gender.group))), pageLength = nrow(results_f.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group <- meta_results_list_cohort$meta_f.lg.gender.group
+meta_f.lg.gender.group_age <- meta_f.lg.gender.group$age
+summary(meta_f.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group <- meta_results_list_cohort$meta_f.lg.gender.group
+meta_f.lg.gender.group_gender <- meta_f.lg.gender.group$gender
+summary(meta_f.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group <- meta_results_list_cohort$meta_f.lg.gender.group
+meta_f.lg.gender.group_age.group <- meta_f.lg.gender.group$age.group
+summary(meta_f.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Fianacial <- figure_list$plot_f.lg.gender.group
+
+Fianacial
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_f.lg.gender.group.inter <- results_table_list_cohort$results_f.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_f.lg.gender.group.inter <- results_f.lg.gender.group.inter[!(row.names(results_f.lg.gender.group.inter) %in% remove),]
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_f.lg.gender.group.inter)[rownames(results_f.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_f.lg.gender.group.inter <- results_f.lg.gender.group.inter[, colSums(is.na(results_f.lg.gender.group.inter)) != nrow(results_f.lg.gender.group.inter)]
+results_f.lg.gender.group.inter <- results_f.lg.gender.group.inter[complete.cases(results_f.lg.gender.group.inter), ]
+
+results_f.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_f.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_f.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_f.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_f.lg.gender.group.inter[25,] <- p_judge(results_f.lg.gender.group.inter[25,])
+results_f.lg.gender.group.inter[26,] <- p_judge(results_f.lg.gender.group.inter[26,])
+results_f.lg.gender.group.inter[27,] <- p_judge(results_f.lg.gender.group.inter[27,])
+results_f.lg.gender.group.inter[28,] <- p_judge(results_f.lg.gender.group.inter[28,])
+results_f.lg.gender.group.inter[29,] <- p_judge(results_f.lg.gender.group.inter[29,])
+results_f.lg.gender.group.inter[30,] <- p_judge(results_f.lg.gender.group.inter[30,])
+results_f.lg.gender.group.inter[31,] <- p_judge(results_f.lg.gender.group.inter[31,])
+results_f.lg.gender.group.inter[32,] <- p_judge(results_f.lg.gender.group.inter[32,])
+
+results_f.lg.gender.group.inter <- results_f.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_f.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_f.lg.gender.group.inter))), pageLength = nrow(results_f.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_age <- meta_f.lg.gender.group.inter$age
+summary(meta_f.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_gender <- meta_f.lg.gender.group.inter$gender
+summary(meta_f.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_age.group <- meta_f.lg.gender.group.inter$age.group
+summary(meta_f.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_age_gender <- meta_f.lg.gender.group.inter$age_gender
+summary(meta_f.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_age_age.group <- meta_f.lg.gender.group.inter$age_age.group
+summary(meta_f.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_gender_age.group <- meta_f.lg.gender.group.inter$gender_age.group
+summary(meta_f.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_f.lg.gender.group.inter <- meta_results_list_cohort$meta_f.lg.gender.group.inter
+meta_f.lg.gender.group.inter_age_gender_age.group <- meta_f.lg.gender.group.inter$age_gender_age.group
+summary(meta_f.lg.gender.group.inter_age_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Fianacial <- figure_list$plot_f.lg.gender.group.inter
+
+Fianacial
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+### 9.3. Driving risk-taking {.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_d.lg.gender.group <- results_table_list_cohort$results_d.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_d.lg.gender.group <- results_d.lg.gender.group[!(row.names(results_d.lg.gender.group) %in% remove),]
+rownames(results_d.lg.gender.group)[rownames(results_d.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_d.lg.gender.group)[rownames(results_d.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_d.lg.gender.group)[rownames(results_d.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_d.lg.gender.group)[rownames(results_d.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_d.lg.gender.group <- results_d.lg.gender.group[, colSums(is.na(results_d.lg.gender.group)) != nrow(results_d.lg.gender.group)]
+results_d.lg.gender.group <- results_d.lg.gender.group[complete.cases(results_d.lg.gender.group), ]
+
+results_d.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_d.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_d.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_d.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_d.lg.gender.group[13,] <- p_judge(results_d.lg.gender.group[13,])
+results_d.lg.gender.group[14,] <- p_judge(results_d.lg.gender.group[14,])
+results_d.lg.gender.group[15,] <- p_judge(results_d.lg.gender.group[15,])
+results_d.lg.gender.group[16,] <- p_judge(results_d.lg.gender.group[16,])
+
+results_d.lg.gender.group <- results_d.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_d.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_d.lg.gender.group))), pageLength = nrow(results_d.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group <- meta_results_list_cohort$meta_d.lg.gender.group
+meta_d.lg.gender.group_age <- meta_d.lg.gender.group$age
+summary(meta_d.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group <- meta_results_list_cohort$meta_d.lg.gender.group
+meta_d.lg.gender.group_gender <- meta_d.lg.gender.group$gender
+summary(meta_d.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group <- meta_results_list_cohort$meta_d.lg.gender.group
+meta_d.lg.gender.group_age.group <- meta_d.lg.gender.group$age.group
+summary(meta_d.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Driving <- figure_list$plot_d.lg.gender.group
+
+Driving
+```
+<div style="margin-bottom:40px;">
+</div>
+
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_d.lg.gender.group.inter <- results_table_list_cohort$results_d.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_d.lg.gender.group.inter <- results_d.lg.gender.group.inter[!(row.names(results_d.lg.gender.group.inter) %in% remove),]
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_d.lg.gender.group.inter)[rownames(results_d.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_d.lg.gender.group.inter <- results_d.lg.gender.group.inter[, colSums(is.na(results_d.lg.gender.group.inter)) != nrow(results_d.lg.gender.group.inter)]
+results_d.lg.gender.group.inter <- results_d.lg.gender.group.inter[complete.cases(results_d.lg.gender.group.inter), ]
+
+results_d.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_d.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_d.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_d.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_d.lg.gender.group.inter[25,] <- p_judge(results_d.lg.gender.group.inter[25,])
+results_d.lg.gender.group.inter[26,] <- p_judge(results_d.lg.gender.group.inter[26,])
+results_d.lg.gender.group.inter[27,] <- p_judge(results_d.lg.gender.group.inter[27,])
+results_d.lg.gender.group.inter[28,] <- p_judge(results_d.lg.gender.group.inter[28,])
+results_d.lg.gender.group.inter[29,] <- p_judge(results_d.lg.gender.group.inter[29,])
+results_d.lg.gender.group.inter[30,] <- p_judge(results_d.lg.gender.group.inter[30,])
+results_d.lg.gender.group.inter[31,] <- p_judge(results_d.lg.gender.group.inter[31,])
+results_d.lg.gender.group.inter[32,] <- p_judge(results_d.lg.gender.group.inter[32,])
+
+results_d.lg.gender.group.inter <- results_d.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_d.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_d.lg.gender.group.inter))), pageLength = nrow(results_d.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_age <- meta_d.lg.gender.group.inter$age
+summary(meta_d.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_gender <- meta_d.lg.gender.group.inter$gender
+summary(meta_d.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_age.group <- meta_d.lg.gender.group.inter$age.group
+summary(meta_d.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_age_gender <- meta_d.lg.gender.group.inter$age_gender
+summary(meta_d.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_age_age.group <- meta_d.lg.gender.group.inter$age_age.group
+summary(meta_d.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_gender_age.group <- meta_d.lg.gender.group.inter$gender_age.group
+summary(meta_d.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_d.lg.gender.group.inter <- meta_results_list_cohort$meta_d.lg.gender.group.inter
+meta_d.lg.gender.group.inter_age_gender_age.group <- meta_d.lg.gender.group.inter$age_gender_age.group
+summary(meta_d.lg.gender.group.inter_age_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Driving <- figure_list$plot_d.lg.gender.group.inter
+
+Driving
+```
+<div style="margin-bottom:40px;">
+</div>
+
+
+### 9.4. Recreational risk-taking{.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_r.lg.gender.group <- results_table_list_cohort$results_r.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_r.lg.gender.group <- results_r.lg.gender.group[!(row.names(results_r.lg.gender.group) %in% remove),]
+rownames(results_r.lg.gender.group)[rownames(results_r.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_r.lg.gender.group)[rownames(results_r.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_r.lg.gender.group)[rownames(results_r.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_r.lg.gender.group)[rownames(results_r.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_r.lg.gender.group <- results_r.lg.gender.group[, colSums(is.na(results_r.lg.gender.group)) != nrow(results_r.lg.gender.group)]
+results_r.lg.gender.group <- results_r.lg.gender.group[complete.cases(results_r.lg.gender.group), ]
+
+results_r.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_r.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_r.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_r.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_r.lg.gender.group[13,] <- p_judge(results_r.lg.gender.group[13,])
+results_r.lg.gender.group[14,] <- p_judge(results_r.lg.gender.group[14,])
+results_r.lg.gender.group[15,] <- p_judge(results_r.lg.gender.group[15,])
+results_r.lg.gender.group[16,] <- p_judge(results_r.lg.gender.group[16,])
+
+results_r.lg.gender.group <- results_r.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_r.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_r.lg.gender.group))), pageLength = nrow(results_r.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group <- meta_results_list_cohort$meta_r.lg.gender.group
+meta_r.lg.gender.group_age <- meta_r.lg.gender.group$age
+summary(meta_r.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group <- meta_results_list_cohort$meta_r.lg.gender.group
+meta_r.lg.gender.group_gender <- meta_r.lg.gender.group$gender
+summary(meta_r.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group <- meta_results_list_cohort$meta_r.lg.gender.group
+meta_r.lg.gender.group_age.group <- meta_r.lg.gender.group$age.group
+summary(meta_r.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Recreational <- figure_list$plot_r.lg.gender.group
+
+Recreational
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_r.lg.gender.group.inter <- results_table_list_cohort$results_r.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_r.lg.gender.group.inter <- results_r.lg.gender.group.inter[!(row.names(results_r.lg.gender.group.inter) %in% remove),]
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_r.lg.gender.group.inter)[rownames(results_r.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_r.lg.gender.group.inter <- results_r.lg.gender.group.inter[, colSums(is.na(results_r.lg.gender.group.inter)) != nrow(results_r.lg.gender.group.inter)]
+results_r.lg.gender.group.inter <- results_r.lg.gender.group.inter[complete.cases(results_r.lg.gender.group.inter), ]
+
+results_r.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_r.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_r.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_r.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_r.lg.gender.group.inter[25,] <- p_judge(results_r.lg.gender.group.inter[25,])
+results_r.lg.gender.group.inter[26,] <- p_judge(results_r.lg.gender.group.inter[26,])
+results_r.lg.gender.group.inter[27,] <- p_judge(results_r.lg.gender.group.inter[27,])
+results_r.lg.gender.group.inter[28,] <- p_judge(results_r.lg.gender.group.inter[28,])
+results_r.lg.gender.group.inter[29,] <- p_judge(results_r.lg.gender.group.inter[29,])
+results_r.lg.gender.group.inter[30,] <- p_judge(results_r.lg.gender.group.inter[30,])
+results_r.lg.gender.group.inter[31,] <- p_judge(results_r.lg.gender.group.inter[31,])
+results_r.lg.gender.group.inter[32,] <- p_judge(results_r.lg.gender.group.inter[32,])
+
+results_r.lg.gender.group.inter <- results_r.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_r.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_r.lg.gender.group.inter))), pageLength = nrow(results_r.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_age <- meta_r.lg.gender.group.inter$age
+summary(meta_r.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_gender <- meta_r.lg.gender.group.inter$gender
+summary(meta_r.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_age.group <- meta_r.lg.gender.group.inter$age.group
+summary(meta_r.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_age_gender <- meta_r.lg.gender.group.inter$age_gender
+summary(meta_r.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_age_age.group <- meta_r.lg.gender.group.inter$age_age.group
+summary(meta_r.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_gender_age.group <- meta_r.lg.gender.group.inter$gender_age.group
+summary(meta_r.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_r.lg.gender.group.inter <- meta_results_list_cohort$meta_r.lg.gender.group.inter
+meta_r.lg.gender.group.inter_age_gender_age.group <- meta_r.lg.gender.group.inter$age_gender_age.group
+summary(meta_r.lg.gender.group.inter_age_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Recreational <- figure_list$plot_r.lg.gender.group.inter
+
+Recreational
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+
+### 9.5. Occupational risk-taking{.tabset}
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_o.lg.gender.group <- results_table_list_cohort$results_o.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_o.lg.gender.group <- results_o.lg.gender.group[!(row.names(results_o.lg.gender.group) %in% remove),]
+rownames(results_o.lg.gender.group)[rownames(results_o.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_o.lg.gender.group)[rownames(results_o.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_o.lg.gender.group)[rownames(results_o.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_o.lg.gender.group)[rownames(results_o.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_o.lg.gender.group <- results_o.lg.gender.group[, colSums(is.na(results_o.lg.gender.group)) != nrow(results_o.lg.gender.group)]
+results_o.lg.gender.group <- results_o.lg.gender.group[complete.cases(results_o.lg.gender.group), ]
+
+results_o.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_o.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_o.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_o.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_o.lg.gender.group[13,] <- p_judge(results_o.lg.gender.group[13,])
+results_o.lg.gender.group[14,] <- p_judge(results_o.lg.gender.group[14,])
+results_o.lg.gender.group[15,] <- p_judge(results_o.lg.gender.group[15,])
+results_o.lg.gender.group[16,] <- p_judge(results_o.lg.gender.group[16,])
+
+results_o.lg.gender.group <- results_o.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_o.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_o.lg.gender.group))), pageLength = nrow(results_o.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group <- meta_results_list_cohort$meta_o.lg.gender.group
+meta_o.lg.gender.group_age <- meta_o.lg.gender.group$age
+summary(meta_o.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group <- meta_results_list_cohort$meta_o.lg.gender.group
+meta_o.lg.gender.group_gender <- meta_o.lg.gender.group$gender
+summary(meta_o.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group <- meta_results_list_cohort$meta_o.lg.gender.group
+meta_o.lg.gender.group_age.group <- meta_o.lg.gender.group$age.group
+summary(meta_o.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Occupational <- figure_list$plot_o.lg.gender.group
+
+Occupational
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_o.lg.gender.group.inter <- results_table_list_cohort$results_o.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_o.lg.gender.group.inter <- results_o.lg.gender.group.inter[!(row.names(results_o.lg.gender.group.inter) %in% remove),]
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_o.lg.gender.group.inter)[rownames(results_o.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_o.lg.gender.group.inter <- results_o.lg.gender.group.inter[, colSums(is.na(results_o.lg.gender.group.inter)) != nrow(results_o.lg.gender.group.inter)]
+results_o.lg.gender.group.inter <- results_o.lg.gender.group.inter[complete.cases(results_o.lg.gender.group.inter), ]
+
+results_o.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_o.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_o.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_o.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_o.lg.gender.group.inter[25,] <- p_judge(results_o.lg.gender.group.inter[25,])
+results_o.lg.gender.group.inter[26,] <- p_judge(results_o.lg.gender.group.inter[26,])
+results_o.lg.gender.group.inter[27,] <- p_judge(results_o.lg.gender.group.inter[27,])
+results_o.lg.gender.group.inter[28,] <- p_judge(results_o.lg.gender.group.inter[28,])
+results_o.lg.gender.group.inter[29,] <- p_judge(results_o.lg.gender.group.inter[29,])
+results_o.lg.gender.group.inter[30,] <- p_judge(results_o.lg.gender.group.inter[30,])
+results_o.lg.gender.group.inter[31,] <- p_judge(results_o.lg.gender.group.inter[31,])
+results_o.lg.gender.group.inter[32,] <- p_judge(results_o.lg.gender.group.inter[32,])
+
+results_o.lg.gender.group.inter <- results_o.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_o.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_o.lg.gender.group.inter))), pageLength = nrow(results_o.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_age <- meta_o.lg.gender.group.inter$age
+summary(meta_o.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_gender <- meta_o.lg.gender.group.inter$gender
+summary(meta_o.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_age.group <- meta_o.lg.gender.group.inter$age.group
+summary(meta_o.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_age_gender <- meta_o.lg.gender.group.inter$age_gender
+summary(meta_o.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_age_age.group <- meta_o.lg.gender.group.inter$age_age.group
+summary(meta_o.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_gender_age.group <- meta_o.lg.gender.group.inter$gender_age.group
+summary(meta_o.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_o.lg.gender.group.inter <- meta_results_list_cohort$meta_o.lg.gender.group.inter
+meta_o.lg.gender.group.inter_age_gender_age.group <- meta_o.lg.gender.group.inter$age_gender_age.group
+summary(meta_o.lg.gender.group.inter_age_gender_age.group)
+```
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Occupational <- figure_list$plot_o.lg.gender.group.inter
+
+Occupational
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+### 9.6. Health risk-taking{.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_h.lg.gender.group <- results_table_list_cohort$results_h.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_h.lg.gender.group <- results_h.lg.gender.group[!(row.names(results_h.lg.gender.group) %in% remove),]
+rownames(results_h.lg.gender.group)[rownames(results_h.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_h.lg.gender.group)[rownames(results_h.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_h.lg.gender.group)[rownames(results_h.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_h.lg.gender.group)[rownames(results_h.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_h.lg.gender.group <- results_h.lg.gender.group[, colSums(is.na(results_h.lg.gender.group)) != nrow(results_h.lg.gender.group)]
+results_h.lg.gender.group <- results_h.lg.gender.group[complete.cases(results_h.lg.gender.group), ]
+
+results_h.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_h.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_h.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_h.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_h.lg.gender.group[13,] <- p_judge(results_h.lg.gender.group[13,])
+results_h.lg.gender.group[14,] <- p_judge(results_h.lg.gender.group[14,])
+results_h.lg.gender.group[15,] <- p_judge(results_h.lg.gender.group[15,])
+results_h.lg.gender.group[16,] <- p_judge(results_h.lg.gender.group[16,])
+
+results_h.lg.gender.group <- results_h.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_h.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_h.lg.gender.group))), pageLength = nrow(results_h.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group <- meta_results_list_cohort$meta_h.lg.gender.group
+meta_h.lg.gender.group_age <- meta_h.lg.gender.group$age
+summary(meta_h.lg.gender.group_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group <- meta_results_list_cohort$meta_h.lg.gender.group
+meta_h.lg.gender.group_gender <- meta_h.lg.gender.group$gender
+summary(meta_h.lg.gender.group_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group <- meta_results_list_cohort$meta_h.lg.gender.group
+meta_h.lg.gender.group_age.group <- meta_h.lg.gender.group$age.group
+summary(meta_h.lg.gender.group_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Health <- figure_list$plot_h.lg.gender.group
+
+Health
+```
+<div style="margin-bottom:40px;">
+</div>
+
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_h.lg.gender.group.inter <- results_table_list_cohort$results_h.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_h.lg.gender.group.inter <- results_h.lg.gender.group.inter[!(row.names(results_h.lg.gender.group.inter) %in% remove),]
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_h.lg.gender.group.inter)[rownames(results_h.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_h.lg.gender.group.inter <- results_h.lg.gender.group.inter[, colSums(is.na(results_h.lg.gender.group.inter)) != nrow(results_h.lg.gender.group.inter)]
+results_h.lg.gender.group.inter <- results_h.lg.gender.group.inter[complete.cases(results_h.lg.gender.group.inter), ]
+
+results_h.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_h.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_h.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_h.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_h.lg.gender.group.inter[25,] <- p_judge(results_h.lg.gender.group.inter[25,])
+results_h.lg.gender.group.inter[26,] <- p_judge(results_h.lg.gender.group.inter[26,])
+results_h.lg.gender.group.inter[27,] <- p_judge(results_h.lg.gender.group.inter[27,])
+results_h.lg.gender.group.inter[28,] <- p_judge(results_h.lg.gender.group.inter[28,])
+results_h.lg.gender.group.inter[29,] <- p_judge(results_h.lg.gender.group.inter[29,])
+results_h.lg.gender.group.inter[30,] <- p_judge(results_h.lg.gender.group.inter[30,])
+results_h.lg.gender.group.inter[31,] <- p_judge(results_h.lg.gender.group.inter[31,])
+results_h.lg.gender.group.inter[32,] <- p_judge(results_h.lg.gender.group.inter[32,])
+
+results_h.lg.gender.group.inter <- results_h.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),]
+
+datatable(results_h.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_h.lg.gender.group.inter))), pageLength = nrow(results_h.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+*Age effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_age <- meta_h.lg.gender.group.inter$age
+summary(meta_h.lg.gender.group.inter_age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_gender <- meta_h.lg.gender.group.inter$gender
+summary(meta_h.lg.gender.group.inter_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_age.group <- meta_h.lg.gender.group.inter$age.group
+summary(meta_h.lg.gender.group.inter_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_age_gender <- meta_h.lg.gender.group.inter$age_gender
+summary(meta_h.lg.gender.group.inter_age_gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_age_age.group <- meta_h.lg.gender.group.inter$age_age.group
+summary(meta_h.lg.gender.group.inter_age_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_gender_age.group <- meta_h.lg.gender.group.inter$gender_age.group
+summary(meta_h.lg.gender.group.inter_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+*Age $\times$ Gender $\times$ Age group effect results*
+```{r, echo = F, warning = FALSE, message = FALSE}
+meta_h.lg.gender.group.inter <- meta_results_list_cohort$meta_h.lg.gender.group.inter
+meta_h.lg.gender.group.inter_age_gender_age.group <- meta_h.lg.gender.group.inter$age_gender_age.group
+summary(meta_h.lg.gender.group.inter_age_gender_age.group)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+Health <- figure_list$plot_h.lg.gender.group.inter
+
+Health
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+
+
+### 9.7. Social risk-taking{.tabset}
+
+#### Linear with gender and age group model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_s.lg.gender.group <- results_table_list_cohort$results_s.lg.gender.group
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2")
+results_s.lg.gender.group <- results_s.lg.gender.group[!(row.names(results_s.lg.gender.group) %in% remove),]
+rownames(results_s.lg.gender.group)[rownames(results_s.lg.gender.group)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_s.lg.gender.group)[rownames(results_s.lg.gender.group)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_s.lg.gender.group)[rownames(results_s.lg.gender.group)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_s.lg.gender.group)[rownames(results_s.lg.gender.group)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+results_s.lg.gender.group <- results_s.lg.gender.group[, colSums(is.na(results_s.lg.gender.group)) != nrow(results_s.lg.gender.group), drop = FALSE]
+results_s.lg.gender.group <- results_s.lg.gender.group[complete.cases(results_s.lg.gender.group), 1, drop = FALSE]
+
+results_s.lg.gender.group[c(1:12,17:21,24), ] <- purrr::modify_if(results_s.lg.gender.group[c(1:12,17:21,24), ], ~is.numeric(.), ~round(., 2))
+results_s.lg.gender.group[c(22:23), ] <- purrr::modify_if(results_s.lg.gender.group[c(22:23), ], ~is.numeric(.), ~round(., 0))
+
+results_s.lg.gender.group[13,] <- p_judge(results_s.lg.gender.group[13,])
+results_s.lg.gender.group[14,] <- p_judge(results_s.lg.gender.group[14,])
+results_s.lg.gender.group[15,] <- p_judge(results_s.lg.gender.group[15,])
+results_s.lg.gender.group[16,] <- p_judge(results_s.lg.gender.group[16,])
+
+results_s.lg.gender.group <- results_s.lg.gender.group[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"), 1, drop = FALSE]
+
+datatable(results_s.lg.gender.group, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_s.lg.gender.group))), pageLength = nrow(results_s.lg.gender.group)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+
++ **Note:** Because just one panel (SOEP) includes social risk-taking items, we did not undertake the meta-analysis and no results are shown here.
+
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+b=7
+c=1
+y_name <- paste0(domains[b],"_z_mean")
+  y_number <- paste0(domains[b],"_z_n")
+  y_domain <- domains[b]
+  
+  plot_name <- paste0("plot_",ab_domains[b],".", models[c])
+  
+  #model data
+  model_data <- plot_model_data_list_cohort[[plot_name]] %>%
+    filter(!(age.group == 0 & age > 60)) %>%
+    filter(!(age.group == 1 & age <= 60)) 
+    
+  names(model_data)[names(model_data) == "Panel"] <- "Sample"
+  model_data$Panel <- values[match(model_data$Sample, index)]
+  model_data$Lines <- lines[match(model_data$Sample, index)]
+  
+  model_data[,"gender"] <- ifelse(model_data$gender == 0, "Male", "Female")
+  model_data$gender = factor(model_data$gender, levels = c("Male", "Female"))
+  
+  model_data[,"age.group"] <- ifelse(model_data$age.group == 0, "Under 60 years old", "Above 60 years old")
+  model_data$age.group = factor(model_data$age.group, levels = c("Under 60 years old", "Above 60 years old"))
+  
+  
+ ggplot() + 
+    stat_smooth(data = model_data, aes(x = age, y = fit, colour=Sample), se=FALSE, method = "lm", formula = y ~ x, size = 0.5) +
+    #stat_smooth(data = model_data, aes(x = age, y = fit), color = "black", se=TRUE, method = "lm", formula = y ~ x, size = 1.1) +
+    labs(x= "Age", y= paste(y_domain,"risk-taking",sep = " ")) +
+    #scale_x_continuous(scales_x)+
+    coord_cartesian(ylim = c(-1, 1)) +
+    theme_bw() +
+    theme(panel.border = element_rect(colour = "black", fill=NA))+
+    facet_grid_sc(rows = vars(gender), cols = vars(age.group), scales = list(x = scales_x)) +
+    guides(col = guide_legend(ncol = 1))
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
+#### Linear with gender and age group interaction model
+<br>
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+results_s.lg.gender.group.inter <- results_table_list_cohort$results_s.lg.gender.group.inter
+remove <- c("Intercept_Std.Error2", "d.c.age_Std.Error2", "gender_Std.Error2", "age.group_Std.Error2", "d.c.age:gender_Std.Error2", "d.c.age:age.group_Std.Error2", "gender:age.group_Std.Error2", "d.c.age:gender:age.group_Std.Error2")
+results_s.lg.gender.group.inter <- results_s.lg.gender.group.inter[!(row.names(results_s.lg.gender.group.inter) %in% remove),]
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="Intercept_Std.Error1"] <- "Intercept_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="d.c.age_Std.Error1"] <- "d.c.age_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="gender_Std.Error1"] <- "gender_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="age.group_Std.Error1"] <- "age.group_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="d.c.age:gender_group_Std.Error1"] <- "d.c.age:gender_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="d.c.age:age.group_Std.Error1"] <- "d.c.age:age.group_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="gender:age.group_Std.Error1"] <- "gender:age.group_Std.Error"
+rownames(results_s.lg.gender.group.inter)[rownames(results_s.lg.gender.group.inter)=="d.c.age:gender:age.group_Std.Error1"] <- "d.c.age:gender:age.group_Std.Error"
+results_s.lg.gender.group.inter <- results_s.lg.gender.group.inter[, colSums(is.na(results_s.lg.gender.group.inter)) != nrow(results_s.lg.gender.group.inter), drop = FALSE]
+results_s.lg.gender.group.inter <- results_s.lg.gender.group.inter[complete.cases(results_s.lg.gender.group.inter), 1, drop = FALSE]
+
+results_s.lg.gender.group.inter[c(1:24,33:37,40), ] <- purrr::modify_if(results_s.lg.gender.group.inter[c(1:24,33:37,40), ], ~is.numeric(.), ~round(., 2))
+results_s.lg.gender.group.inter[c(38:39), ] <- purrr::modify_if(results_s.lg.gender.group.inter[c(38:39), ], ~is.numeric(.), ~round(., 0))
+
+results_s.lg.gender.group.inter[25,] <- p_judge(results_s.lg.gender.group.inter[25,])
+results_s.lg.gender.group.inter[26,] <- p_judge(results_s.lg.gender.group.inter[26,])
+results_s.lg.gender.group.inter[27,] <- p_judge(results_s.lg.gender.group.inter[27,])
+results_s.lg.gender.group.inter[28,] <- p_judge(results_s.lg.gender.group.inter[28,])
+results_s.lg.gender.group.inter[29,] <- p_judge(results_s.lg.gender.group.inter[29,])
+results_s.lg.gender.group.inter[30,] <- p_judge(results_s.lg.gender.group.inter[30,])
+results_s.lg.gender.group.inter[31,] <- p_judge(results_s.lg.gender.group.inter[31,])
+results_s.lg.gender.group.inter[32,] <- p_judge(results_s.lg.gender.group.inter[32,])
+
+results_s.lg.gender.group.inter <- results_s.lg.gender.group.inter[c("Intercept_Estimate", "Intercept_Std.Error", "Intercept_t.value", "Intercept_p.value", "d.c.age_Estimate", "d.c.age_Std.Error", "d.c.age_t.value", "d.c.age_p.value", "gender_Estimate","gender_Std.Error", "gender_t.value", "gender_p.value", "age.group_Estimate", "age.group_Std.Error", "age.group_t.value", "age.group_p.value","d.c.age:gender_Estimate", "d.c.age:gender_Std.Error", "d.c.age:gender_t.value", "d.c.age:gender_p.value", "d.c.age:age.group_Estimate", "d.c.age:age.group_Std.Error", "d.c.age:age.group_t.value", "d.c.age:age.group_p.value", "gender:age.group_Estimate", "gender:age.group_Std.Error", "gender:age.group_t.value", "gender:age.group_p.value", "d.c.age:gender:age.group_Estimate", "d.c.age:gender:age.group_Std.Error", "d.c.age:gender:age.group_t.value", "d.c.age:gender:age.group_p.value", "Within-group-variance", "Between-group-variance", "Random-slope-variance", "Slope-Intercept-covariance", "Slope-Intercept-correlation", "N.group", "N.obs", "LL"),1, drop = FALSE]
+
+datatable(results_s.lg.gender.group.inter, options = list(columnDefs = list(list(className = 'dt-center', targets = 1:ncol(results_s.lg.gender.group.inter))), pageLength = nrow(results_s.lg.gender.group.inter)))
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Meta-analysis results:**
+<br>
+
++ **Note:** Because just one panel (SOEP) includes social risk-taking items, we did not undertake the meta-analysis and no results are shown here.
+
+<div style="margin-bottom:20px;">
+</div>
+
+**Plot age trajectory:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+b=7
+c=2
+y_name <- paste0(domains[b],"_z_mean")
+  y_number <- paste0(domains[b],"_z_n")
+  y_domain <- domains[b]
+  
+  plot_name <- paste0("plot_",ab_domains[b],".", models[c])
+  
+  #model data
+  model_data <- plot_model_data_list_cohort[[plot_name]] %>%
+    filter(!(age.group == 0 & age > 60)) %>%
+    filter(!(age.group == 1 & age <= 60)) 
+    
+  names(model_data)[names(model_data) == "Panel"] <- "Sample"
+  model_data$Panel <- values[match(model_data$Sample, index)]
+  model_data$Lines <- lines[match(model_data$Sample, index)]
+  
+  model_data[,"gender"] <- ifelse(model_data$gender == 0, "Male", "Female")
+  model_data$gender = factor(model_data$gender, levels = c("Male", "Female"))
+  
+  model_data[,"age.group"] <- ifelse(model_data$age.group == 0, "Under 60 years old", "Above 60 years old")
+  model_data$age.group = factor(model_data$age.group, levels = c("Under 60 years old", "Above 60 years old"))
+  
+  
+ ggplot() + 
+    stat_smooth(data = model_data, aes(x = age, y = fit, colour=Sample), se=FALSE, method = "lm", formula = y ~ x, size = 0.5) +
+    #stat_smooth(data = model_data, aes(x = age, y = fit), color = "black", se=TRUE, method = "lm", formula = y ~ x, size = 1.1) +
+    labs(x= "Age", y= paste(y_domain,"risk-taking",sep = " ")) +
+    #scale_x_continuous(scales_x)+
+    coord_cartesian(ylim = c(-1, 1)) +
+    theme_bw() +
+    theme(panel.border = element_rect(colour = "black", fill=NA))+
+    facet_grid_sc(rows = vars(gender), cols = vars(age.group), scales = list(x = scales_x)) +
+    guides(col = guide_legend(ncol = 1))
+```
+<div style="margin-bottom:40px;">
+</div>
+
+
 
 
 
