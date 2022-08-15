@@ -53,7 +53,7 @@ for (a in 1:length(panels)){
         group_by(ID) %>%
         mutate(min.age = min(age)) %>%
         ungroup() %>%
-        mutate(age.group = if_else(min.age <= 60, 0, 1)) %>%
+        mutate(age.group = if_else(min.age < 60, 0, 1)) %>%
         mutate(gender = if_else(Gender == 2, 1, 0)) 
       waves <- length(unique(dataset$SYEAR))
       
