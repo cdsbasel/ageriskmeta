@@ -53,7 +53,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## 1. Overview of the project 
 
-&nbsp; &nbsp;&nbsp; &nbsp;This website contains results from all analyses conducted for the manuscript entitled “Life-course trajectories of risk-taking propensity: A coordinated analysis of longitudinal studies”. This document is organized by different domains of risk-taking propensity, including general, financial, driving, recreational, occupational, health and social domains. For each risk-taking propensity, we created 7 models, including intercept-only model (M1), fixed-effect model (M2), linear model (M3), linear with gender model (M4), linear with gender interaction model (M5), quadratic model (M6) and quadratic with gender model (M7), and provided a table summarizing individual study model results, the meta-analytic results and  trajectory plots. We also tested individual predictors that are not included in the simple trajectory model in meta-regression: continent, mean age and scale range. The results from these models are available below. The code used to compile this file is available in the Github repository (https://github.com/cdsbasel/ageriskmeta). Moreover, the items of different domains in each panel we used can be checked in the "Items and scale.pdf" file, which is also available in the Github repository.
+&nbsp; &nbsp;&nbsp; &nbsp;This website contains results from all analyses conducted for the manuscript entitled “Life-course trajectories of risk-taking propensity: A coordinated analysis of longitudinal studies”. This document is organized by different domains of risk-taking propensity, including general, financial, driving, recreational, occupational, health and social domains. For each risk-taking propensity, we created 7 models, including intercept-only model (M1), fixed-effect model (M2), linear model (M3), linear with gender model (M4), linear with gender interaction model (M5), quadratic model (M6) and quadratic with gender model (M7), and provided a table summarizing individual study model results, the meta-analytic results and  trajectory plots. We also tested individual predictors that are not included in the simple trajectory model in meta-regression: continent, mean age and scale range. The results from these models are available below. The code used to compile this file is available in the Github repository (https://github.com/cdsbasel/ageriskmeta). Moreover, Moreover, We had supplied a supplemental file detailing all items and associated scales for all samples in our data repository (GitHub) which includes specific information about the items used for each domain.
 
 <div style="margin-bottom:40px;">
 </div>
@@ -6838,88 +6838,10 @@ datatable(Table3, container = sketch,  options = list(columnDefs = list(list(cla
 <div style="margin-bottom:40px;">
 </div>
 
-## 8. Identifying variance components {.tabset}
 
-### Age effect
-**Models results:**
-<br>
-```{r, echo = F, warning = FALSE, message = FALSE}
-setwd("../data/results_data")
-re_parameters <- read_csv("meta_regression_parameter.csv")
+## 8. Cohort effect
 
-# Estimate model
-lmer_Age <- lmer(B_Age ~  1 +  (1|Domain) + (1|Continent) + (1|Scale) + (1|Survey_year)  + (1|Sample),  
-                 data = re_parameters, control = lmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=2E6)))
-
-# Check model summary
-summary(lmer_Age)
-```
-
-<div style="margin-bottom:20px;">
-</div>
-**ICC results:**
-```{r, echo = F, warning = FALSE, message = FALSE}
-icc_specs(lmer_Age) %>%
-  mutate_if(is.numeric, round, 2)
-```
-
-<div style="margin-bottom:20px;">
-</div>
-
-
-**Plot variance components:**
-<br>
-<br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Variance decomposition of age effect", fig.align="center"}
-plot_variance(lmer_Age) +
-  ylim(0, 100)
-```
-
-<div style="margin-bottom:20px;">
-</div>
-
-
-
-### Gender effect
-**Models results:**
-<br>
-```{r, echo = F, warning = FALSE, message = FALSE}
-# Estimate model
-lmer_Gender <- lmer(B_Gender ~  1 +  (1|Domain) + (1|Continent) + (1|Scale) + (1|Survey_year) + (1|Sample),  
-                    data = re_parameters, control = lmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=2E6)))
-
-# Check model summary
-summary(lmer_Gender)
-```
-
-<div style="margin-bottom:20px;">
-</div>
-
-**ICC results:**
-```{r, echo = F, warning = FALSE, message = FALSE}
-icc_specs(lmer_Gender) %>%
-  mutate_if(is.numeric, round, 2)
-```
-
-<div style="margin-bottom:20px;">
-</div>
-
-
-**Plot variance components:**
-<br>
-<br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Variance decomposition of gender effect", fig.align="center"}
-plot_variance(lmer_Gender) +
-  ylim(0, 100)
-```
-
-<div style="margin-bottom:40px;">
-</div>
-
-
-## 9. Cohort effect
-
-### 9.1. General risk-taking {.tabset}
+### 8.1. General risk-taking {.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -7011,7 +6933,7 @@ summary(meta_g.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 setwd(".../data/results_data")
 plot_model_data_list_cohort <- readRDS(file = "plot_model_data_list_cohort.Rds") 
 
@@ -7212,7 +7134,7 @@ summary(meta_g.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of general risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 ###lg.gender.group.inter model
 c=2
 for (b in 1:length(ab_domains)) {
@@ -7259,7 +7181,7 @@ General
 </div>
 
 
-### 9.2. Financial risk-taking {.tabset}
+### 8.2. Financial risk-taking {.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -7327,7 +7249,7 @@ summary(meta_f.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Fianacial <- figure_list$plot_f.lg.gender.group
 
 Fianacial
@@ -7451,7 +7373,7 @@ summary(meta_f.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of financial risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Fianacial <- figure_list$plot_f.lg.gender.group.inter
 
 Fianacial
@@ -7464,7 +7386,7 @@ Fianacial
 </div>
 
 
-### 9.3. Driving risk-taking {.tabset}
+### 8.3. Driving risk-taking {.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -7532,7 +7454,7 @@ summary(meta_d.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Driving <- figure_list$plot_d.lg.gender.group
 
 Driving
@@ -7655,7 +7577,7 @@ summary(meta_d.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of driving risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Driving <- figure_list$plot_d.lg.gender.group.inter
 
 Driving
@@ -7664,7 +7586,7 @@ Driving
 </div>
 
 
-### 9.4. Recreational risk-taking{.tabset}
+### 8.4. Recreational risk-taking{.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -7732,7 +7654,7 @@ summary(meta_r.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Recreational <- figure_list$plot_r.lg.gender.group
 
 Recreational
@@ -7855,7 +7777,7 @@ summary(meta_r.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of recreational risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Recreational <- figure_list$plot_r.lg.gender.group.inter
 
 Recreational
@@ -7866,7 +7788,7 @@ Recreational
 
 
 
-### 9.5. Occupational risk-taking{.tabset}
+### 8.5. Occupational risk-taking{.tabset}
 #### Linear with gender and age group model
 <br>
 **Models results:**
@@ -7933,7 +7855,7 @@ summary(meta_o.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Occupational <- figure_list$plot_o.lg.gender.group
 
 Occupational
@@ -8056,7 +7978,7 @@ summary(meta_o.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of occupational risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Occupational <- figure_list$plot_o.lg.gender.group.inter
 
 Occupational
@@ -8066,7 +7988,7 @@ Occupational
 </div>
 
 
-### 9.6. Health risk-taking{.tabset}
+### 8.6. Health risk-taking{.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -8134,7 +8056,7 @@ summary(meta_h.lg.gender.group_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Health <- figure_list$plot_h.lg.gender.group
 
 Health
@@ -8257,7 +8179,7 @@ summary(meta_h.lg.gender.group.inter_age_gender_age.group)
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of health risk-taking propensity for each sample and meta-analysis, moderated by gender and age group. The solid black line indicates the average trajectory weighted by the sample size. The colored lines represent the trajectory for individual samples"}
 Health <- figure_list$plot_h.lg.gender.group.inter
 
 Health
@@ -8268,7 +8190,7 @@ Health
 
 
 
-### 9.7. Social risk-taking{.tabset}
+### 8.7. Social risk-taking{.tabset}
 
 #### Linear with gender and age group model
 <br>
@@ -8313,7 +8235,7 @@ datatable(results_s.lg.gender.group, options = list(columnDefs = list(list(class
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity"}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity, moderated by gender and age group."}
 b=7
 c=1
 y_name <- paste0(domains[b],"_z_mean")
@@ -8403,7 +8325,7 @@ datatable(results_s.lg.gender.group.inter, options = list(columnDefs = list(list
 **Plot age trajectory:**
 <br>
 <br>
-```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity."}
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Age trajectories of social risk-taking propensity, moderated by gender and age group."}
 b=7
 c=2
 y_name <- paste0(domains[b],"_z_mean")
@@ -8439,8 +8361,88 @@ y_name <- paste0(domains[b],"_z_mean")
     facet_grid_sc(rows = vars(gender), cols = vars(age.group), scales = list(x = scales_x)) +
     guides(col = guide_legend(ncol = 1))
 ```
+
 <div style="margin-bottom:40px;">
 </div>
+
+## 9. Identifying variance components {.tabset}
+
+### Age effect
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+setwd(".../data/results_data")
+re_parameters <- read_csv("meta_regression_parameter.csv")
+
+# Estimate model
+lmer_Age <- lmer(B_Age ~  1 +  (1|Domain) + (1|Continent) + (1|Scale) + (1|Survey_year)  + (1|Sample),  
+                 data = re_parameters, control = lmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=2E6)))
+
+# Check model summary
+summary(lmer_Age)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+**ICC results:**
+```{r, echo = F, warning = FALSE, message = FALSE}
+icc_specs(lmer_Age) %>%
+  mutate_if(is.numeric, round, 2)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+
+**Plot variance components:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Variance decomposition of age effect", fig.align="center"}
+plot_variance(lmer_Age) +
+  ylim(0, 100)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+
+
+### Gender effect
+**Models results:**
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE}
+# Estimate model
+lmer_Gender <- lmer(B_Gender ~  1 +  (1|Domain) + (1|Continent) + (1|Scale) + (1|Survey_year) + (1|Sample),  
+                    data = re_parameters, control = lmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=2E6)))
+
+# Check model summary
+summary(lmer_Gender)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+**ICC results:**
+```{r, echo = F, warning = FALSE, message = FALSE}
+icc_specs(lmer_Gender) %>%
+  mutate_if(is.numeric, round, 2)
+```
+
+<div style="margin-bottom:20px;">
+</div>
+
+
+**Plot variance components:**
+<br>
+<br>
+```{r, echo = F, warning = FALSE, message = FALSE, fig.cap = "Figure: Variance decomposition of gender effect", fig.align="center"}
+plot_variance(lmer_Gender) +
+  ylim(0, 100)
+```
+
+<div style="margin-bottom:40px;">
+</div>
+
 
 
 
