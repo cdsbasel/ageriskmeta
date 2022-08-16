@@ -87,7 +87,7 @@ saveRDS(model_list_cohort, file ="results_data/model_list_cohort.Rds")
 
 
 #step 3: model comparison
-#General: 7 g.lg.gender.group, 1 g.lg.gender.group.inter
+#General: 8 g.lg.gender.group, 1 g.lg.gender.group.inter
 General_results <- model_list_cohort$GCOE_Japan
 anova(General_results$g.lg.gender.group, General_results$g.lg.gender.group.inter)  #  g.lg.gender.group.inter < g.lg.gender.group 
 
@@ -118,7 +118,7 @@ anova(General_results$g.lg.gender.group, General_results$g.lg.gender.group.inter
 
 
 
-#Financial: 16 f.lg.gender.group, 4 f.lg.gender.group.inter
+#Financial: 17 f.lg.gender.group, 3 f.lg.gender.group.inter
 Financial_results <- model_list_cohort$DHS
 anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group < f.lg.gender.group.inter
 
@@ -126,7 +126,7 @@ Financial_results <- model_list_cohort$HILDA
 anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group < f.lg.gender.group.inter
 
 Financial_results <- model_list_cohort$HRS
-anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group < f.lg.gender.group.inter
+anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  #  f.lg.gender.group.inter < f.lg.gender.group 
 
 Financial_results <- model_list_cohort$PHF
 anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter < f.lg.gender.group  
@@ -147,10 +147,10 @@ Financial_results <- model_list_cohort$SHARE_Denmark
 anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter ~ f.lg.gender.group 
 
 Financial_results <- model_list_cohort$SHARE_Estonia
-anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter < f.lg.gender.group 
+anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter ~ f.lg.gender.group 
 
 Financial_results <- model_list_cohort$SHARE_France
-anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter ~ f.lg.gender.group 
+anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter < f.lg.gender.group 
 
 Financial_results <- model_list_cohort$SHARE_Germany
 anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.inter)  # f.lg.gender.group.inter < f.lg.gender.group 
@@ -182,7 +182,7 @@ anova(Financial_results$f.lg.gender.group, Financial_results$f.lg.gender.group.i
 
 
 
-#Driving
+#Driving: d.lg.gender.group.inter:1   d.lg.gender.group:2
 Driving_results <- model_list_cohort$HRS
 anova(Driving_results$d.lg.gender.group, Driving_results$d.lg.gender.group.inter) # d.lg.gender.group.inter < d.lg.gender.group
 
@@ -194,7 +194,7 @@ anova(Driving_results$d.lg.gender.group, Driving_results$d.lg.gender.group.inter
 
 
 
-#Recreational
+#Recreational: r.lg.gender.group.inter:1   r.lg.gender.group:2
 Recreational_results <- model_list_cohort$HRS
 anova(Recreational_results$r.lg.gender.group, Recreational_results$r.lg.gender.group.inter) # r.lg.gender.group.inter < r.lg.gender.group
 
@@ -206,7 +206,7 @@ anova(Recreational_results$r.lg.gender.group, Recreational_results$r.lg.gender.g
 
 
 
-#Occupational
+#Occupational: o.lg.gender.group.inter:0   o.lg.gender.group:3
 Occupational_results <- model_list_cohort$HRS
 anova(Occupational_results$o.lg.gender.group, Occupational_results$o.lg.gender.group.inter)  # o.lg.gender.group.inter ~ o.lg.gender.group
 
@@ -218,7 +218,7 @@ anova(Occupational_results$o.lg.gender.group, Occupational_results$o.lg.gender.g
 
 
 
-#Health
+#Health: h.lg.gender.group.inter:0   h.lg.gender.group:3
 Health_results <- model_list_cohort$HRS
 anova(Health_results$h.lg.gender.group, Health_results$h.lg.gender.group.inter)    # h.lg.gender.group.inter ~ h.lg.gender.group 
 
@@ -226,10 +226,10 @@ Health_results <- model_list_cohort$SAVE
 anova(Health_results$h.lg.gender.group, Health_results$h.lg.gender.group.inter)    # h.lg.gender.group.inter ~ h.lg.gender.group 
 
 Health_results <- model_list_cohort$SOEP
-anova(Health_results$h.lg.gender.group, Health_results$h.lg.gender.group.inter)    # h.lg.gender.group.inter < h.lg.gender.group 
+anova(Health_results$h.lg.gender.group, Health_results$h.lg.gender.group.inter)    # h.lg.gender.group.inter ~ h.lg.gender.group 
 
 
-#Social
+#Social : s.lg.gender.group:1
 Social_results <- model_list_cohort$SOEP
 anova(Social_results$s.lg.gender.group, Social_results$s.lg.gender.group.inter)   # s.lg.gender.group.inter < s.lg.gender.group   
 
