@@ -6849,7 +6849,7 @@ datatable(Table3, container = sketch,  options = list(columnDefs = list(list(cla
 </div>
 
 
-## 8. Cohort effect
+## 8. Cohort effects
 
 ### 8.1. Multilevel model results and meta analysis results{.tabset}
 
