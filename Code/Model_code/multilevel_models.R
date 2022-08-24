@@ -90,8 +90,8 @@ create_model <- function(panel, models, domains, ab_domains, model_list, intdumm
         ungroup() %>%
         drop_na() %>%
         mutate(c_age=age-50) %>%   #centered age: age-mean(age)  mean.age = 50.06019
-        mutate(d_c_age=c_age/10)  #change age to decade age: divided by 10
-      dataset[,"gender"] <- ifelse(dataset$Gender == 2, 1, 0)
+        mutate(d_c_age=c_age/10) %>% #change age to decade age: divided by 10
+        mutate(gender = if_else(Gender == 2, 1, 0))
       waves <- length(unique(dataset$SYEAR))
       # create models
       for (c in 1:length(models)) {
