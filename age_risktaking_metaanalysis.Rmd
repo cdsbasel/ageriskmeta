@@ -2486,7 +2486,44 @@ This section offers a detailed overview of the 7 different models included in th
   
   + *data = DATA:* Specifies that the variables (e.g., risk, subject ID) are in a dataset called "DATA"
   
+  
+  ### Linear with gender and age group model
 
+* **Model name:** Linear with gender and age group model, also called age fixed and random effects model with gender and dummy cohort
+
+* **Description:** This model further included age group based on previous linear with gender model. 
+
+* **Analysis:** Model <- lmer (risk ~ age + gender + age group + (1+age|subject), data = DATA)
+
+  + *Model:* Tells R to save the output of the analyses to an object called "Model"
+
+  + *lmer:* This is the command to test a mixed linear model using lme4.
+  
+  + *risk ~ age + gender + age group:* Formula that lme4 will process, specified in the form DV~IV1+IV2+IV3, the first independent variable in the model is level-1 predictor (i.e., centered and standardized age), the second independent variable is level-2 predictor(i.e.,gender), and the third independent variable is age group (age at first assessment was also dummy coded as below or over 60 years old).
+  
+  + *1+age|subject:*  Specifies that the model include not only age fixed effect, but also age random effect.
+  
+  + *data = DATA:* Specifies that the variables (e.g., risk,  age, gender, subject ID) are in a dataset called "DATA"
+  
+
+### Linear with gender and age group interaction model
+
+* **Model name:** Linear with gender and age group interaction model, also called age fixed and random effects model with gender and dummy cohort, and including interaction
+
+* **Description:** This model further included an age by gender by age group interaction based on previous linear with gender and age group model. 
+
+* **Analysis:** Model <- lmer (risk ~ age + gender + age group + age × gender × age group + (1+age|subject), data = DATA)
+
+  + *Model:* Tells R to save the output of the analyses to an object called "Model"
+
+  + *lmer:* This is the command to test a mixed linear model using lme4.
+  
+  + *risk ~ age + gender + age group + age × gender × age group:* Formula that lme4 will process, specified in the form DV~IV1+IV2+IV3+IV4, the first independent variable in the model is level-1 predictor (i.e., centered and standardized age), the second independent variable is level-2 predictor(i.e.,gender), the third independent variable is age group (age at first assessment was also dummy coded as below or over 60 years old), and the fourth independent variable is the interaction between age, gender and age group.
+  
+  + *1+age|subject:*  Specifies that the model include not only age fixed effect, but also age random effect.
+  
+  + *data = DATA:* Specifies that the variables (e.g., risk,  age, gender, subject ID) are in a dataset called "DATA"
+  
 
 <div style="margin-bottom:40px;">
 </div>
