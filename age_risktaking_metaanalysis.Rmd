@@ -2341,7 +2341,7 @@ ggplot(USoc_process_z_General) +
 
 ## 3. Multilevel model process {.tabset}
 
-This section offers a detailed overview of the 7 different models included in the multilevel analysis in the paper *Life-course trajectories of risk-taking propensity: A coordinated analysis of longitudinal studies*.
+This section offers a detailed overview of the 9 different models included in the multilevel analysis in the paper *Life-course trajectories of risk-taking propensity: A coordinated analysis of longitudinal studies*.
 
 **Each model is described in a separate tab. We include the following:**
 
