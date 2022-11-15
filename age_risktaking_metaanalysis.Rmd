@@ -42,7 +42,6 @@ library(gridExtra)
 library(grid)
 library(latex2exp)
 library(DT)
-devtools::install_github("zeehio/facetscales")
 library(facetscales)
 knitr::opts_chunk$set(echo = F, warning = F, message = F, error = F)
 ```
